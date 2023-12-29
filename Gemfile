@@ -41,6 +41,9 @@ gem 'pry', '~> 0.14.1'
 # JWT JSON Web Tokens
 gem "jwt", "~> 2.5"
 
+# Sidekiq
+gem "sidekiq"
+
 # Rack cors for cors issues
 gem "rack-cors", "~> 1.1"
 

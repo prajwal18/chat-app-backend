@@ -27,8 +27,8 @@ class User < ApplicationRecord
     Otp.create!(otp: hashed_otp, user_id: id)
 
     # Send welcome message and otp to the user
-    UserMailer.welcome_email(self).deliver_now
-    UserMailer.otp_email(self, otp).deliver_now
+    UserMailer.welcome_email(self).deliver_later
+    UserMailer.otp_email(self, otp).deliver_later
   end
 
   has_many :sent_messages, class_name: 'Message', foreign_key: 'sender_id', dependent: :destroy
