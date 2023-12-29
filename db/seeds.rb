@@ -11,8 +11,8 @@
 Message.destroy_all
 User.destroy_all
 
-User.create(name: 'Unish Thakuri Shahi', email: 'unesh@gmail.com', password: 'MyPassword')
-User.create(name: 'Prajwal Gautam', email: 'prajwal@gmail.com', password: 'password')
+User.create(name: 'Unish Thakuri Shahi', email: 'eunessshahithakuri@gmail.com', password: 'MyPassword')
+User.create(name: 'Prajwal Gautam', email: 'prajwalgautam10@gmail.com', password: 'password')
 
 
 sender = User.where(email: 'prajwal@gmail.com').first

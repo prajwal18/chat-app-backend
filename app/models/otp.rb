@@ -1,5 +1,5 @@
 class Otp < ApplicationRecord
-  before_create :add_expires_at
+  before_save :add_expires_at
   validates_presence_of :otp
   belongs_to :user
 
@@ -8,7 +8,7 @@ class Otp < ApplicationRecord
     # 1 day has 1440 minutes.
     # Rational is used to create a fraction without lossing accuracy to floating points rounding.
     # The below expression is used to create a date that is 5 minutes ahead of whenever the statement is executed.
-    self.expires_at = DateTime.now + Rational(5, 1440) # Otp expires after 5 minute
+    expires_at = DateTime.now + Rational(5, 1440) # Otp expires after 5 minute
   end
 
   def self.generate

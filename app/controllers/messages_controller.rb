@@ -13,7 +13,7 @@ class MessagesController < ErrorWrapperController
     sender_id = decoded_token[0]['user_id']
     permitted_params = message_params
     permitted_params[:sender_id] = sender_id
-    message = Message.create(permitted_params)
+    message = Message.create!(permitted_params)
     render json: {
       message: message.serialize
     }, status: :created
