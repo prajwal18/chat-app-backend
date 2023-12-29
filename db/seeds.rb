@@ -8,6 +8,7 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
+Otp.destroy_all
 Message.destroy_all
 User.destroy_all
 

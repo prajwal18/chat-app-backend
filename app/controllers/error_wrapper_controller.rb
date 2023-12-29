@@ -5,7 +5,7 @@ class ErrorWrapperController < ApplicationController
   private
 
   def handle_invalid_record(e)
-    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
+    render json: { errors: e.record.errors.full_messages, kkoko:"hello" }, status: :unprocessable_entity
   end
 
   def handle_record_not_found(e)
