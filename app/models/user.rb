@@ -21,14 +21,13 @@ class User < ApplicationRecord
 
   def send_otp
     otp = Otp.generate
-    hashed_otp = Otp.encrypt(otp)
 
     # Save user's otp in db
-    Otp.create!(otp: hashed_otp, user_id: id)
+    otp_enity = Otp.create!(otp:, user_id: id)
 
     # Send welcome message and otp to the user
     UserMailer.welcome_email(self).deliver_later
-    UserMailer.otp_email(self, otp).deliver_later
+    UserMailer.otp_email(self, otp, otp_enity.expires_at).deliver_later
   end
 
   has_many :sent_messages, class_name: 'Message', foreign_key: 'sender_id', dependent: :destroy

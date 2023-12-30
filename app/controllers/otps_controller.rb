@@ -16,11 +16,11 @@ class OtpsController < ErrorWrapperController
   private
 
   def save_otp(user_id, otp)
-    hashed_otp = Otp.encrypt(otp)
     if user_has_otp(user_id)
+      hashed_otp = BCrypt::Password.create(otp)
       Otp.where(user_id:).first.update(otp: hashed_otp)
     else
-      Otp.create!(otp: hashed_otp, user_id:)
+      Otp.create!(otp:, user_id:)
     end
   end
 
