@@ -26,6 +26,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_29_075316) do
 
   create_table "otps", force: :cascade do |t|
     t.string "otp", null: false
+    t.datetime "expires_at", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -39,6 +40,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_29_075316) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_verified"
+    t.index ["email"], name: "index_users_on_email", unique: true
   end
 
   add_foreign_key "messages", "users", column: "receiver_id"
