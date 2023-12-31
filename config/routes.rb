@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   ## Auth Routes
   post 'auth/login', to: 'auth#login'
+  post 'auth/forgot-password', to: 'auth#forgot_password'
   ## Auth Routes
   
   # User Routes
@@ -10,6 +11,7 @@ Rails.application.routes.draw do
   get 'users', to: 'users#list'
   post 'users', to: 'user#create'
   get 'users/:id', to: 'users#show'
+  post 'users/:id/change-password', to: 'users#change_password'
   # User Routes
 
   # Message routes

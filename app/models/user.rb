@@ -2,7 +2,7 @@ class User < ApplicationRecord
   CONFIRMATION_TOKEN_EXPIRATION = 10.minutes
   has_secure_password
   before_save :downcase_email
-  after_save :send_otp
+  after_create :send_otp
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true, uniqueness: true
 
   def confirm!

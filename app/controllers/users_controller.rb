@@ -27,13 +27,39 @@ class UsersController < ErrorWrapperController
     token = encode_token(user_id: user.id)
     render json: {
       user: user.serialize,
-      token: token
+      token:
     }, status: :created
+  end
+
+  def change_password  
+    user_id = params[:id]
+    user = User.find(user_id)
+
+    if check_password(user.password_digest, params[:old_password])
+      new_hashed_password = BCrypt::Password.create(params[:new_password])
+      user.password_digest = new_hashed_password
+      user.save!
+      render json: {
+        message: 'Your password has been changed successfully.'
+      }, status: :ok
+    else
+      render json: {
+        message: 'Your old password does not match. Unable to change password'
+      }, status: 401
+    end
   end
 
   private
 
   def user_params
     params.permit(:name, :email, :password)
+  end
+
+  def change_password_params
+    params.permit(:old_password, :new_password)
+  end
+
+  def check_password(hashed_password, old_password)
+    BCrypt::Password.new(hashed_password) == old_password
   end
 end
