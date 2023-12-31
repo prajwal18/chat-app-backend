@@ -1,51 +1,34 @@
 class UsersController < ErrorWrapperController
-  skip_before_action :authorized, only: %i[create show list]
+  include UsersHelper
+  skip_before_action :authorized, only: %i[create]
 
   def list
-    users = User.all
-    serialized_users = users.to_a
-    serialized_users.collect!(&:serialize)
-    render json: {
-      users: serialized_users
-    }, status: :ok
+    respond_with_all_serialized_users
   end
 
   def show
     user_id = params[:id]
-    user = User.find(user_id)
-    render json: {
-      user: user.serialize
-    }, status: :ok
+    respond_with_a_user(user_id)
   end
 
   def me
-    render json: current_user, status: :ok
+    render json: current_user.serialize, status: :ok
   end
 
   def create
     user = User.create!(user_params)
     token = encode_token(user_id: user.id)
-    render json: {
-      user: user.serialize,
-      token:
-    }, status: :created
+    successful_signup_response(user, token)
   end
 
-  def change_password  
+  def change_password
     user_id = params[:id]
     user = User.find(user_id)
 
-    if check_password(user.password_digest, params[:old_password])
-      new_hashed_password = BCrypt::Password.create(params[:new_password])
-      user.password_digest = new_hashed_password
-      user.save!
-      render json: {
-        message: 'Your password has been changed successfully.'
-      }, status: :ok
+    if user.authenticate(change_password_params[:old_password])
+      change_user_password_and_respond(user, change_password_params[:new_password])
     else
-      render json: {
-        message: 'Your old password does not match. Unable to change password'
-      }, status: 401
+      unsuccessful_password_change_response
     end
   end
 
@@ -57,9 +40,5 @@ class UsersController < ErrorWrapperController
 
   def change_password_params
     params.permit(:old_password, :new_password)
-  end
-
-  def check_password(hashed_password, old_password)
-    BCrypt::Password.new(hashed_password) == old_password
   end
 end
