@@ -1,37 +1,28 @@
 class AuthController < ErrorWrapperController
+  include AuthHelper
   skip_before_action :authorized
 
   def login
-    user = User.find_by!(email: login_params[:email])
+    user = UsersHelper::Helper.find_user_from_email(login_params[:email])
     if user.authenticate(login_params[:password])
       token = encode_token(user_id: user.id)
-      render json: {
-        user: user.serialize,
-        token:
-      }, status: :accepted
+      successful_login_response(user, token)
     else
-      render json: { message: 'Incorrect password' }, status: :unauthorized
+      unsuccessful_login_response
     end
   end
 
   def forgot_password
     otp = forgot_password_params[:otp]
     email = forgot_password_params[:email]
+    new_password = forgot_password_params[:new_password]
 
-    user = User.where(email:).first
-    otp_entity = Otp.where(user_id: user.id).first
-    # Check if the otp is valid if so change the password
-    if BCrypt::Password.new(otp_entity.otp) == otp
-      new_hashed_password = BCrypt::Password.create(params[:new_password])
-      user.password_digest = new_hashed_password
-      user.save!
-      render json: {
-        message: 'OTP is valid and password was changed successfully.'
-      }, status: :ok
+    user = UsersHelper::Helper.find_user_from_email(email)
+
+    if OtpsHelper::Helper.otp_valid?(user, otp)
+      change_password_and_respond(user, new_password)
     else
-      render json: {
-        message: "Your otp doesn't match or is expired, unable to change password."
-      }, status: 401
+      unsuccessful_password_change_response
     end
   end
 

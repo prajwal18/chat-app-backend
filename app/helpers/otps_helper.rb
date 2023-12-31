@@ -11,16 +11,16 @@ module OtpsHelper
     end
   end
 
-  def otp_is_verified(user, otp)
+  def otp_valid?(user, otp)
     users_otp = Otp.where(user_id: user.id).first
-    BCrypt::Password.new(users_otp.otp) == otp
+    BCrypt::Password.new(users_otp.otp) == otp && users_otp.expires_at >= DateTime.now
   end
 
   def user_has_otp(user_id)
     Otp.where(user_id:).exists?
   end
 
-  def send_otp_to_email_and_respond_with_json(user, otp_code)
+  def send_otp_to_email_and_respond(user, otp_code)
     otp_entity = save_otp(user.id, otp_code)
     UserMailer.otp_email(user, otp_code, otp_entity.expires_at).deliver_later
     render json: {
@@ -46,5 +46,9 @@ module OtpsHelper
     render json: {
       message: 'Sorry your otp does not match or it has expired.'
     }, status: 401
+  end
+
+  class Helper
+    extend OtpsHelper
   end
 end
