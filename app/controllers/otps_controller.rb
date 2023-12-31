@@ -4,34 +4,22 @@ class OtpsController < ErrorWrapperController
 
   def send_to_mail
     email = send_to_mail_params[:email]
-    otp = Otp.generate
-    # Some logic to send the otp to the user's email
+    otp_code = Otp.generate
     user = UsersHelper.find_user_from_email(email)
 
-    otp_entity = save_otp(user.id, otp)
-    UserMailer.otp_email(user, otp, otp_entity.expires_at).deliver_later
-    render json: {
-      message: 'OTP has been sent to your email.'
-    }, status: :ok
+    send_otp_to_email_and_respond_with_json(user, otp_code)
   end
 
   def verify_user
     email = verify_params[:email]
     otp = verify_params[:otp]
 
-    user = User.where(email:).first
+    user = UsersHelper.find_user_from_email(email)
 
     if otp_is_verified(user, otp)
-      user.is_verified = true
-      user.save!
-      render json: {
-        message: "#{user.name} has been verified successfully."
-      }, status: :ok
+      verify_user_and_respond(user)
     else
-      render json: {
-        message: 'Sorry your otp does not match or it has expired.'
-      }, status: 401
-
+      invalid_otp_response
     end
   end
 
@@ -39,17 +27,12 @@ class OtpsController < ErrorWrapperController
     email = verify_params[:email]
     otp = verify_params[:otp]
 
-    user = User.where(email:).first
+    user = UsersHelper.find_user_from_email(email)
 
     if otp_is_verified(user, otp)
-      render json: {
-        message: 'The provided otp is valid'
-      }, status: :ok
+      otp_match_response
     else
-      render json: {
-        message: 'Sorry your otp does not match or it has expired.'
-      }, status: 401
-
+      invalid_otp_response
     end
   end
 

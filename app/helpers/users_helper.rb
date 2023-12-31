@@ -1,9 +1,9 @@
 module UsersHelper
-    
-  def find_user_from_email(email)
+
+  def self.find_user_from_email(email)
     user = User.where(email:).first
     return user unless user.nil?
 
-    raise RecordNotFound
+    raise ActiveRecord::RecordNotFound
   end
 end
