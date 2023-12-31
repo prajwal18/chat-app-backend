@@ -1,12 +1,12 @@
 class OtpsController < ErrorWrapperController
+  include OtpsHelper
   skip_before_action :authorized
 
   def send_to_mail
-
     email = send_to_mail_params[:email]
     otp = Otp.generate
     # Some logic to send the otp to the user's email
-    user = User.where(email:).first
+    user = UsersHelper.find_user_from_email(email)
 
     otp_entity = save_otp(user.id, otp)
     UserMailer.otp_email(user, otp, otp_entity.expires_at).deliver_later
@@ -43,7 +43,7 @@ class OtpsController < ErrorWrapperController
 
     if otp_is_verified(user, otp)
       render json: {
-        message: "The provided otp is valid"
+        message: 'The provided otp is valid'
       }, status: :ok
     else
       render json: {
@@ -54,27 +54,6 @@ class OtpsController < ErrorWrapperController
   end
 
   private
-
-  def save_otp(user_id, otp)
-    if user_has_otp(user_id)
-      hashed_otp = BCrypt::Password.create(otp)
-      otp_entity = Otp.where(user_id:).first
-      otp_entity.otp = hashed_otp
-      otp_entity.save!
-      otp_entity
-    else
-      Otp.create!(otp:, user_id:)
-    end
-  end
-
-  def otp_is_verified(user, otp)
-    users_otp = Otp.where(user_id: user.id).first
-    BCrypt::Password.new(users_otp.otp) == otp
-  end
-
-  def user_has_otp(user_id)
-    Otp.where(user_id:).exists?
-  end
 
   def verify_params
     params.permit(:email, :otp)
