@@ -3,14 +3,13 @@ Rails.application.routes.draw do
 
   ## Auth Routes
   post 'auth/login', to: 'auth#login'
-  post 'auth/signup', to: 'user#create'
   ## Auth Routes
-
+  
   # User Routes
   get 'me', to: 'users#me'
   get 'users', to: 'users#list'
+  post 'users', to: 'user#create'
   get 'users/:id', to: 'users#show'
-  post 'users/:id', to: 'users#show'
   # User Routes
 
   # Message routes
@@ -20,6 +19,7 @@ Rails.application.routes.draw do
 
   # Otp routes
   post 'otp/get', to: 'otps#send_to_mail'
-  post 'otp/verify', to: 'otps#verify'
+  post 'otp/verify-user', to: 'otps#verify_user'
+  post 'otp/verify-otp', to: 'otps#verify_otp'
   # Otp routes
 end
