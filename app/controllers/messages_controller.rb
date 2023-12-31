@@ -1,22 +1,15 @@
 class MessagesController < ErrorWrapperController
+  include MessagesHelper
   def conversation
     user_id = params[:id]
     my_id = decoded_token[0]['user_id']
-    messages = Message.find_messages(user_id, my_id)
-    messages.collect!(&:serialize)
-    render json: {
-      messages: messages
-    }, status: :ok
+
+    respond_with_serialized_messages_between_users(user_id, my_id)
   end
 
   def create
     sender_id = decoded_token[0]['user_id']
-    permitted_params = message_params
-    permitted_params[:sender_id] = sender_id
-    message = Message.create!(permitted_params)
-    render json: {
-      message: message.serialize
-    }, status: :created
+    create_message_and_respond(sender_id, message_params[:receiver_id], message_params[:message])
   end
 
   private
