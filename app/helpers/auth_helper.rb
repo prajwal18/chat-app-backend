@@ -21,7 +21,7 @@ module AuthHelper
     user.password_digest = new_hashed_password
     user.save!
     render json: {
-      message: 'OTP is valid and password was changed successfully.'
+      message: 'OTP is valid and password changed successfully.'
     }, status: :ok
   end
 end

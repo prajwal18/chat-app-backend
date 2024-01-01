@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   get 'users', to: 'users#list'
   post 'users', to: 'users#create'
   get 'users/:id', to: 'users#show'
-  post 'users/:id/change-password', to: 'users#change_password'
+  patch 'users/:id/change-password', to: 'users#change_password'
   # User Routes
 
   # Message routes
