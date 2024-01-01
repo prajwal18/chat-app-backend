@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   # User Routes
   get 'me', to: 'users#me'
   get 'users', to: 'users#list'
-  post 'users', to: 'user#create'
+  post 'users', to: 'users#create'
   get 'users/:id', to: 'users#show'
   post 'users/:id/change-password', to: 'users#change_password'
   # User Routes
