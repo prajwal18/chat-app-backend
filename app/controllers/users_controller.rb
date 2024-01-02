@@ -3,7 +3,8 @@ class UsersController < ErrorWrapperController
   skip_before_action :authorized, only: %i[create]
 
   def list
-    respond_with_all_serialized_users
+    query = params[:query]
+    respond_with_all_serialized_users(query)
   end
 
   def show

@@ -6,8 +6,9 @@ module UsersHelper
     raise ActiveRecord::RecordNotFound
   end
 
-  def respond_with_all_serialized_users
-    users = User.all
+  def respond_with_all_serialized_users(query)
+    query = query.nil? ? '' : query
+    users = User.where('name LIKE :query', query: "%#{query}%")
     serialized_users = users.to_a
     serialized_users.collect!(&:serialize)
     render json: {
