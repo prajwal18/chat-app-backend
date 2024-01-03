@@ -1,11 +1,13 @@
 Rails.application.routes.draw do
+  mount ActionCable.server => '/cable'
+
   get 'up' => 'rails/health#show', as: :rails_health_check
 
   ## Auth Routes
   post 'auth/login', to: 'auth#login'
   post 'auth/forgot-password', to: 'auth#forgot_password'
   ## Auth Routes
-  
+
   # User Routes
   get 'me', to: 'users#me'
   get 'users', to: 'users#list'
