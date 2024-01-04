@@ -1,4 +1,5 @@
 class Message < ApplicationRecord
+  after_create_commit :broadcast
 
   def self.find_messages(user_one, user_two)
     users = [user_one, user_two]
@@ -7,6 +8,10 @@ class Message < ApplicationRecord
 
   def serialize
     MessageSerializer.new(self)
+  end
+
+  def broadcast
+    ActionCable.server.broadcast(receiver_id, { message: serialize })
   end
 
   belongs_to :sender, class_name: 'User', foreign_key: 'sender_id'
