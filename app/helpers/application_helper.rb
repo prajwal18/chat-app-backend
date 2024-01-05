@@ -30,4 +30,8 @@ module ApplicationHelper
 
     render json: { message: 'Please log in' }, status: :unauthorized
   end
+
+  class Helper
+    extend ApplicationHelper
+  end
 end

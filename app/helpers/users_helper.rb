@@ -35,6 +35,26 @@ module UsersHelper
     }, status: :created
   end
 
+  def successful_update_response(user, token)
+    render json: {
+      user: user.serialize,
+      token:
+    }, status: :ok
+  end
+
+  def update_user(user_id, update_hash)
+    user = User.find(user_id)
+    token = ApplicationHelper::Helper.encode_token(user_id:)
+    if update_hash.key?('profile_picture')
+      # image_url =
+      # update the user
+    else
+      user.update(update_hash)
+    end
+    user.save!
+    successful_update_response(user, token)
+  end
+
   def change_user_password_and_respond(user, new_password)
     new_hashed_password = BCrypt::Password.create(new_password)
     user.password_digest = new_hashed_password

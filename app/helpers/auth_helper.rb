@@ -24,4 +24,8 @@ module AuthHelper
       message: 'OTP is valid and password changed successfully.'
     }, status: :ok
   end
+
+  class Helper
+    extend AuthHelper
+  end
 end

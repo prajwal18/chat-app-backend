@@ -16,6 +16,11 @@ class UsersController < ErrorWrapperController
     render json: current_user.serialize, status: :ok
   end
 
+  def update
+    user_id = params[:id]
+    update_user(user_id, update_params)
+  end
+
   def create
     user = User.create!(user_params)
     token = encode_token(user_id: user.id)
@@ -41,5 +46,9 @@ class UsersController < ErrorWrapperController
 
   def change_password_params
     params.permit(:old_password, :new_password)
+  end
+
+  def update_params
+    params.permit(:name, :email, :profile_picture)
   end
 end
