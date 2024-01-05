@@ -5,10 +5,6 @@ class User < ApplicationRecord
   after_create :send_otp
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true, uniqueness: true
 
-  def confirm!
-    update_columns(confirmed_at: Time.current)
-  end
-
   def serialize
     UserSerializer.new(self)
   end
