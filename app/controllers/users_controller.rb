@@ -22,7 +22,7 @@ class UsersController < ErrorWrapperController
   end
 
   def create
-    user = User.create!(user_params)
+    user = User.create(user_params)
     token = encode_token(user_id: user.id)
     successful_signup_response(user, token)
   end

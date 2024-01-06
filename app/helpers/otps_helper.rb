@@ -4,10 +4,10 @@ module OtpsHelper
       hashed_otp = BCrypt::Password.create(otp)
       otp_entity = Otp.where(user_id:).first
       otp_entity.otp = hashed_otp
-      otp_entity.save!
+      otp_entity.save
       otp_entity
     else
-      Otp.create!(otp:, user_id:)
+      Otp.create(otp:, user_id:)
     end
   end
 
@@ -30,7 +30,7 @@ module OtpsHelper
 
   def verify_user_and_respond(user)
     user.is_verified = true
-    user.save!
+    user.save
     render json: {
       message: "#{user.name} has been verified successfully."
     }, status: :ok

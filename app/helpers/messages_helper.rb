@@ -8,7 +8,7 @@ module MessagesHelper
   end
 
   def create_message_and_respond(sender_id, receiver_id, message)
-    message = Message.create!(sender_id:, receiver_id:, message:)
+    message = Message.create(sender_id:, receiver_id:, message:)
     render json: {
       message: message.serialize
     }, status: :created

@@ -19,7 +19,7 @@ class User < ApplicationRecord
     otp = Otp.generate
 
     # Save user's otp in db
-    otp_enity = Otp.create!(otp:, user_id: id)
+    otp_enity = Otp.create(otp:, user_id: id)
 
     # Send welcome message and otp to the user
     UserMailer.welcome_email(self).deliver_later

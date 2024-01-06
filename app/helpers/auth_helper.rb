@@ -19,7 +19,7 @@ module AuthHelper
   def change_password_and_respond(user, new_password)
     new_hashed_password = BCrypt::Password.create(new_password)
     user.password_digest = new_hashed_password
-    user.save!
+    user.save
     render json: {
       message: 'OTP is valid and password changed successfully.'
     }, status: :ok

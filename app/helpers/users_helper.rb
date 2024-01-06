@@ -44,21 +44,32 @@ module UsersHelper
 
   def update_user(user_id, update_hash)
     user = User.find(user_id)
+
     token = ApplicationHelper::Helper.encode_token(user_id:)
     if update_hash.key?('profile_picture')
-      # image_url =
-      # update the user
+      # Note we'll only store the asset_id and fetch the url in serializer
+      picture_id = updated_profile_picture(user, update_hash[:profile_picture])
+      user.profile_picture = picture_id
     else
       user.update(update_hash)
     end
-    user.save!
+    user.save
     successful_update_response(user, token)
+  end
+
+  def updated_profile_picture(user, new_pic)
+    Cloudinary::Uploader.destroy(user.profile_picture) unless user.profile_picture.nil?
+    image = Cloudinary::Uploader.upload(new_pic)
+    puts "\n\n\n\n"
+    puts image
+    puts "\n\n\n\n"
+    image['public_id']
   end
 
   def change_user_password_and_respond(user, new_password)
     new_hashed_password = BCrypt::Password.create(new_password)
     user.password_digest = new_hashed_password
-    user.save!
+    user.save
     render json: {
       message: 'Your password has been changed successfully.'
     }, status: :ok
