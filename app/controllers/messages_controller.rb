@@ -9,12 +9,12 @@ class MessagesController < ErrorWrapperController
 
   def create
     sender_id = decoded_token[0]['user_id']
-    create_message_and_respond(sender_id, message_params[:receiver_id], message_params[:message])
+    create_message_and_respond(sender_id, message_params)
   end
 
   private
 
   def message_params
-    params.permit(:receiver_id, :message)
+    params.permit(:receiver_id, :message, :picture)
   end
 end

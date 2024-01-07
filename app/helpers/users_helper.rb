@@ -60,9 +60,6 @@ module UsersHelper
   def updated_profile_picture(user, new_pic)
     Cloudinary::Uploader.destroy(user.profile_picture) unless user.profile_picture.nil?
     image = Cloudinary::Uploader.upload(new_pic)
-    puts "\n\n\n\n"
-    puts image
-    puts "\n\n\n\n"
     image['public_id']
   end
 
