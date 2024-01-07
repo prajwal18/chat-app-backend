@@ -8,16 +8,27 @@ module MessagesHelper
   end
 
   def create_message_and_respond(sender_id, message_hash)
-    message_properties = { sender_id:, receiver_id: message_hash[:receiver_id] }
-
     if message_hash.key?(:picture)
-      image = Cloudinary::Uploader.upload(message_hash[:picture])
-      message_properties.merge!(message: image['public_id'])
-      message_properties.merge!(is_picture: true)
+      msg_hash = { sender_id:, receiver_id: message_hash[:receiver_id], is_picture: true }
+      create_picture_message(msg_hash, message_hash[:picture])
     else
-      message_properties.merge!(message: message_hash[:message])
+      message_hash.merge!(sender_id:)
+      create_text_message_and_respond(message_hash)
     end
-    message = Message.create(message_properties)
+  end
+
+  def create_text_message_and_respond(message_hash)
+    message = Message.create(message_hash)
+    render json: {
+      message: message.serialize
+    }, status: :created
+  end
+
+  def create_picture_message(message_hash, picture)
+    image = Cloudinary::Uploader.upload(picture)
+    message_hash.merge!(message: image['public_id'])
+    message = Message.create(message_hash)
+    message.serialize
     render json: {
       message: message.serialize
     }, status: :created

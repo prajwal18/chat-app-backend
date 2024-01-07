@@ -22,7 +22,7 @@ class UsersController < ErrorWrapperController
   end
 
   def create
-    user = User.create(user_params)
+    user = create_user(user_params)
     token = encode_token(user_id: user.id)
     successful_signup_response(user, token)
   end
@@ -41,7 +41,7 @@ class UsersController < ErrorWrapperController
   private
 
   def user_params
-    params.permit(:name, :email, :password)
+    params.permit(:name, :email, :password, :profile_picture)
   end
 
   def change_password_params
