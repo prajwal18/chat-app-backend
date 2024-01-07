@@ -14,6 +14,8 @@ module MessagesHelper
       image = Cloudinary::Uploader.upload(message_hash[:picture])
       message_properties.merge!(message: image['public_id'])
       message_properties.merge!(is_picture: true)
+    else
+      message_properties.merge!(message: message_hash[:message])
     end
     message = Message.create(message_properties)
     render json: {
