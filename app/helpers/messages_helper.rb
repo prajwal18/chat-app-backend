@@ -7,10 +7,9 @@ module MessagesHelper
     }, status: :ok
   end
 
-  def create_message_and_respond(sender_id, message_hash)
-    message_hash.merge!(sender_id:)
-    if message_hash.key?(:picture)
-      create_picture_message_and_respond(message_hash)
+  def create_message_and_respond(message_hash, pictures)
+    if pictures
+      create_picture_messages_and_respond(message_hash, pictures)
     else
       create_text_message_and_respond(message_hash)
     end
@@ -23,15 +22,26 @@ module MessagesHelper
     }, status: :created
   end
 
-  def create_picture_message_and_respond(message_hash)
-    picture = convert_picture_to_base64(message_hash[:picture])
-    message_hash.delete(:picture)
-    message_hash[:message] = 'loading...'
-    message = Message.create(message_hash)
-    UpdateMessageWithPictureJob.perform_later(message.id, picture)
+  def create_picture_messages_and_respond(message_hash, pictures)
+    messages = create_picture_messages(message_hash, pictures)
+
     render json: {
-      message: message.serialize
+      messages:,
+      bulk: true
     }, status: :created
+  end
+
+  def create_picture_messages(message_hash, pictures)
+    messages = []
+
+    pictures.each do |picture|
+      picture64 = convert_picture_to_base64(picture)
+      message_hash[:message] = 'loading...'
+      message = Message.create(message_hash)
+      UpdateMessageWithPictureJob.perform_later(message.id, picture64)
+      messages << message.serialize
+    end
+    messages
   end
 
   def convert_picture_to_base64(picture)
