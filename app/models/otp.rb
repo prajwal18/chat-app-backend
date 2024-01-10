@@ -1,7 +1,7 @@
 class Otp < ApplicationRecord
   before_save :add_expires_at
   before_create :encrypt
-  validates_presence_of :otp
+  validates_presence_of :otp, :user
   belongs_to :user
 
   def add_expires_at

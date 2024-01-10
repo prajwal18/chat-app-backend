@@ -18,23 +18,18 @@ module UsersHelper
 
   def respond_with_a_user(id)
     user = User.find(id:)
-
-    return if user.nil?
-
     render json: {
       user: user.serialize
     }, status: :ok
   end
 
   def create_user(user_params)
-    binding.pry
-
     if user_params.key?(:profile_picture)
       image = Cloudinary::Uploader.upload(user_params[:profile_picture])
       picture_id = image['public_id']
       user_params[:profile_picture] = picture_id
     end
-    User.create(user_params)
+    User.create!(user_params)
   end
 
   def successful_signup_response(user, token)

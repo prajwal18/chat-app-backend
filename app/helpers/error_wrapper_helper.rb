@@ -6,4 +6,8 @@ module ErrorWrapperHelper
   def handle_record_not_found(_error)
     render json: { message: "User doesn't exist" }, status: :unauthorized
   end
+
+  def handle_invalid_argument(error)
+    render json: { message: error }, status: :unauthorized
+  end
 end

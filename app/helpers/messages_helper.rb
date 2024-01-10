@@ -16,7 +16,7 @@ module MessagesHelper
   end
 
   def create_text_message_and_respond(message_hash)
-    message = Message.create(message_hash)
+    message = Message.create!(message_hash)
     render json: {
       message: message.serialize
     }, status: :created
@@ -37,7 +37,7 @@ module MessagesHelper
     pictures.each do |picture|
       picture64 = convert_picture_to_base64(picture)
       message_hash[:message] = 'loading...'
-      message = Message.create(message_hash)
+      message = Message.create!(message_hash)
       UpdateMessageWithPictureJob.perform_later(message.id, picture64)
       messages << message.serialize
     end
