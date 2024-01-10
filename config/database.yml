@@ -17,7 +17,7 @@ default: &default
   # Uncomment the below line to use local database
   host: localhost
   username: postgres
-  password: postgres
+  password: <%= ENV['DATABASE_PASSWORD'] %>
 
 development:
   <<: *default
