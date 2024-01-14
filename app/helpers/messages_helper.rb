@@ -34,10 +34,10 @@ module MessagesHelper
   def create_picture_messages(message_hash, pictures)
     messages = []
 
+    message_hash[:message] = 'loading...'
     pictures.each do |picture|
-      picture64 = convert_picture_to_base64(picture)
-      message_hash[:message] = 'loading...'
       message = Message.create!(message_hash)
+      picture64 = convert_picture_to_base64(picture)
       UpdateMessageWithPictureJob.perform_later(message.id, picture64)
       messages << message.serialize
     end
