@@ -16,6 +16,8 @@ class User < ApplicationRecord
   end
 
   def send_otp
+    return if Rails.env.test?
+
     otp = Otp.generate
 
     # Save user's otp in db

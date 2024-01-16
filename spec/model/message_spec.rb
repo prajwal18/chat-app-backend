@@ -1,9 +1,9 @@
 RSpec.describe Message, type: :model do
-  let(:sender) { User.create(name: 'prajwal', email: 'prajwal@gmail.com', password: 'password') }
-  let(:receiver) { User.create(name: 'rohan', email: 'rohan@gmail.com', password: 'password') }
+  let(:sender) { create(:user, name: 'prajwal', email: 'prajwal@gmail.com', password: 'password') }
+  let(:receiver) { create(:user, name: 'rohan', email: 'rohan@gmail.com', password: 'password') }
 
   subject do
-    described_class.create(sender_id: sender.id, receiver_id: receiver.id, message: 'Hello Boss')
+    create(:message, sender_id: sender.id, receiver_id: receiver.id, message: 'Hello Boss')
   end
 
   describe 'Validation' do

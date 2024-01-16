@@ -1,8 +1,7 @@
 RSpec.describe User, type: :model do
-  let(:password) { 'password' }
 
   subject do
-    described_class.new(name: 'Prajwal Gautam', email: 'prajwal@gmail.com', password:)
+    create(:user)
   end
   
   describe 'Validation' do
