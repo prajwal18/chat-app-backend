@@ -1,13 +1,13 @@
-RSpec.describe 'Login', type: :request do
+RSpec.describe AuthController, type: :controller do
   let!(:user) { create(:user, email: 'prajwal@gmail.com', password: 'password') }
   let!(:otp) { create(:otp, user:) }
 
-  describe 'POST /auth/login' do
+  describe 'POST #login' do
     context 'with in-valid credentials' do
       before do
         email = 'prajwal10@gmail.com'
         password = 'password'
-        post auth_login_path, params: { email:, password: }
+        post :login, params: { email:, password: }
       end
       it 'returns with a status of unauthorized' do
         expect(response).to have_http_status(:unauthorized)
@@ -18,7 +18,7 @@ RSpec.describe 'Login', type: :request do
       before do
         email = 'prajwal@gmail.com'
         password = 'password'
-        post auth_login_path, params: { email:, password: }
+        post :login, params: { email:, password: }
       end
       it 'returns with a status of accepted' do
         expect(response).to have_http_status(:accepted)
@@ -32,24 +32,20 @@ RSpec.describe 'Login', type: :request do
     end
   end
 
-  describe 'POST auth/forgot-password' do
+  describe 'POST #forgot_password' do
     context 'with in-valid credentials' do
-      before do
+      it 'returns with a status of unauthorized' do
         email = 'prajwal@gmail.com'
         new_password = 'password123'
-        post auth_forgot_password_path, params: { email:, new_password:, otp: '123486' }
-      end
-      it 'returns with a status of unauthorized' do
+        post :forgot_password, params: { email:, new_password:, otp: '123486' }
         expect(response).to have_http_status(401)
       end
     end
     context 'with valid credentials' do
-      before do
+      it 'returns with a status of ok' do
         email = 'prajwal@gmail.com'
         new_password = 'password123'
-        post auth_forgot_password_path, params: { email:, new_password:, otp: '123456' }
-      end
-      it 'returns with a status of ok' do
+        post :forgot_password, params: { email:, new_password:, otp: '123456' }
         expect(response).to have_http_status(:ok)
       end
     end
