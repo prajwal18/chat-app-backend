@@ -3,7 +3,7 @@ RSpec.describe User, type: :model do
   subject do
     create(:user)
   end
-  
+
   describe 'Validation' do
     context 'Presence' do
       it { should validate_presence_of :name }

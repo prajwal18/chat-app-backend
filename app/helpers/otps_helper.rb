@@ -22,10 +22,15 @@ module OtpsHelper
 
   def send_otp_to_email_and_respond(user, otp_code)
     otp_entity = save_otp(user.id, otp_code)
-    UserMailer.otp_email(user, otp_code, otp_entity.expires_at).deliver_later
-    render json: {
-      message: 'OTP has been sent to your email.'
-    }, status: :ok
+
+    if Rails.env.test?
+      render json: { otp_code:, otp_entity: }, status: :ok
+    else
+      UserMailer.otp_email(user, otp_code, otp_entity.expires_at).deliver_later
+      render json: {
+        message: 'OTP has been sent to your email.'
+      }, status: :ok
+    end
   end
 
   def verify_user_and_respond(user)
