@@ -13,7 +13,7 @@ class UsersController < ErrorWrapperController
   end
 
   def me
-    render json: current_user.serialize, status: :ok
+    render json: current_user, status: :ok
   end
 
   def update

@@ -17,7 +17,8 @@ module UsersHelper
   end
 
   def respond_with_a_user(id)
-    user = User.find(id:)
+    user = User.find(id)
+
     render json: {
       user: user.serialize
     }, status: :ok
